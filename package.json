@@ -1,6 +1,6 @@
 {
 	"name": "@orgsdk/plugin-servicem8",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Read-only bounded servicem8 workflow evidence for OrgSDK.",
 	"type": "module",
 	"private": true,

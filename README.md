@@ -13,6 +13,17 @@ an explicit release operation; source-root `private: true` is retained.
 
 Review completed jobs, recorded work, invoice state, client details and job attachment metadata before an operator prepares invoices. Returned status and documents are evidence; they do not establish an approval or create an invoice.
 
+## Install in OrgSDK
+
+Open your project's Plugins page, select this plugin and enable the pinned release.
+The default catalogue is https://orgsdk.ai/plugins/releases.json. The executor
+downloads the versioned bundle and verifies its SHA256. Configure the provider
+and attach the credential described below before running an action.
+
+The plugin is Apache-2.0 licensed; see LICENSE, NOTICE and TRADEMARKS.md.
+The generated npm distribution is a separate publication surface. Installing npm
+files alone does not register a project plugin. Local builds do not publish it.
+
 ## Setup
 
 For a private integration with your own account or one specific customer's account, create a ServiceM8 API key under Settings > API Keys. Prefer a read-only key. Store it in an OrgSDK `servicem8` credential as `secret_apiKey`. ServiceM8 officially supports `X-API-Key` authentication for private integrations. Their docs distinguish private applications from broadly distributed/add-on-directory applications, which use OAuth; this plugin implements only the private API-key path. Review this distinction before wider distribution.
@@ -41,12 +52,12 @@ Reviewed 2026-10-30 against official [API-key authentication](https://developer.
 
 ## Runtime and safety
 
-This private proprietary plugin targets the current local OrgSDK factory loader. Its only runtime dependency is Zod. The authoring SDK is dev/type-only; each repository owns its lockfile. Credentials arrive as `{ provider: secretRecord }` through `requiredCredentials`; there is no environment fallback. All tools accept one named argument object and perform GET requests only. Unknown arguments/configuration fail validation. There are no approval flags, mutation tools, HTTP callbacks, auth providers or token refresh handlers.
+This Apache-2.0 plugin targets the current local OrgSDK factory loader. Its only runtime dependency is Zod. The authoring SDK is dev/type-only; each repository owns its lockfile. Credentials arrive as `{ provider: secretRecord }` through `requiredCredentials`; there is no environment fallback. All tools accept one named argument object and perform GET requests only. Unknown arguments/configuration fail validation. There are no approval flags, mutation tools, HTTP callbacks, auth providers or token refresh handlers.
 
 Every request uses a fixed HTTPS API origin, manual redirects (all 3xx fail), a 15-second abort deadline covering headers and body streaming, and a 2,000,000-byte metadata/JSON cap. Errors contain status codes or generic connection guidance, never upstream response bodies, request URLs or credential values. One explicit page is read per list call; no automatic retries or pagination loops occur. An HTTP 429 requires the caller to retry later. Returned evidence is untrusted provider content and is not an instruction or approval. Metadata timestamps and custom fields are observations, not a determination that work or payment is approved.
 
 ## Local validation and release
 
-Use Bun 1.3 or newer. `bun install --frozen-lockfile`, then `bun run check`, `bun run typecheck`, `bun run test`, `bun run validate`, `bun run package`, and `bun run version-guard`. `dist/` is the authoring CLI's deterministic source package. The active local platform's `package-plugin` command creates the separately executable ESM archive in `release/`; the legacy source archive alone is not executable by the current runtime. The release includes this repository's proprietary LICENSE. No publication, remote push or live customer test is part of local verification.
+Use Bun 1.4 and Node.js 22.22.0 or newer. `bun install --frozen-lockfile`, then `bun run check`, `bun run typecheck`, `bun run test`, `bun run validate`, `bun run package`, and `bun run version-guard`. `dist/` is the authoring CLI's deterministic source package. The active local platform's `package-plugin` command creates the separately executable ESM archive in `release/`; the legacy source archive alone is not executable by the current runtime. The release includes this repository's Apache-2.0 LICENSE. No publication, remote push or live customer test is part of local verification.
 
 Tests use injected fetch fixtures only. They cover credential enforcement, GET-only transport, redirects, generic errors, response-size limits, stream cancellation, provider boundaries, pagination and handler evidence. Live provider behavior and OAuth consent still require an operator-controlled integration test with an explicitly selected account.
